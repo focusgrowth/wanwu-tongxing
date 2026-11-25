@@ -1,0 +1,50 @@
+const mollusca = 'https://www.molluscabase.org/aphia.php?p=taxlist&tName=';
+const marine = 'https://www.marinespecies.org/aphia.php?p=taxlist&tName=';
+const fossil = 'https://www.nhm.ac.uk/discover/what-is-an-ammonite.html';
+const classes = [
+ ['腹足纲','Gastropoda','从陆生蜗牛到海螺，壳有卷曲、低平和帽状等形态。'],
+ ['双壳纲','Bivalvia','两片壳由铰合部相连，左右壳可以形态各异。'],
+ ['头足纲','Cephalopoda','有外壳、内壳和壳退化等多种情况。'],
+ ['多板纲','Polyplacophora','石鳖背部有八块依次排列的壳板。'],
+ ['掘足纲','Scaphopoda','管状壳微弯，两端开口。'],
+ ['单板纲','Monoplacophora','单片帽状壳覆盖背面。'],
+ ['尾腔纲','Caudofoveata','体表有钙质骨针，未形成完整壳。'],
+ ['沟腹纲','Solenogastres','体表有钙质骨针，适合和完整壳做对照。']
+];
+const scopes = ['软体动物','其他动物','微观壳体','形状对照'];
+const entries = [
+ [0,'Gastropoda','勃艮第蜗牛','Helix pomatia','卷曲','陆地','从壳顶看壳圈绕轴展开，从侧面能看见壳圈彼此堆叠。','snail.webp'],
+ [0,'Gastropoda','大鲍','Haliotis gigantea','帽状','海洋','低平的壳像耳朵，沿壳边可以找到一排孔。'],
+ [0,'Gastropoda','帽贝','Patella vulgata','帽状','海洋','壳像一顶低帽，适合从侧面观察帽顶的偏移。'],
+ [0,'Gastropoda','虎斑宝贝','Cypraea tigris','卷曲','海洋','成年壳外观圆润，从底面看有一条细长的开口。'],
+ [0,'Gastropoda','大法螺','Charonia tritonis','卷曲','海洋','壳塔拉长，可以沿缝合线追踪每一圈。'],
+ [0,'Gastropoda','象牙芋螺','Conus litteratus','卷曲','海洋','外轮廓近锥形，观察壳顶才容易看清盘绕。'],
+ [0,'Gastropoda','福寿螺','Pomacea canaliculata','卷曲','淡水','壳饱满，壳圈之间有明显的沟。'],
+ [0,'Bivalvia','太平洋牡蛎','Magallana gigas','双瓣','海洋','贴住基底的一片通常较深，另一片较平。'],
+ [0,'Bivalvia','大扇贝','Pecten maximus','双瓣','海洋','顺着从铰合部向外展开的放射肋看，壳面像打开的扇子。','scallop.webp'],
+ [0,'Bivalvia','紫贻贝','Mytilus edulis','双瓣','海洋','铰合端较窄，壳轮廓向另一端拉宽。'],
+ [0,'Bivalvia','大砗磲','Tridacna gigas','双瓣','海洋','壳厚，边缘沿粗大的放射褶起伏。'],
+ [0,'Bivalvia','三角帆蚌','Sinohyriopsis cumingii','双瓣','淡水','两片壳围合成腔，从侧面观察可见背缘处的隆起。'],
+ [0,'Cephalopoda','鹦鹉螺','Nautilus pompilius','卷曲','海洋','剖开外壳可见隔室，隔室沿卷曲方向逐渐变大。','nautilus.webp','https://www.montereybayaquarium.org/animals-the-ocean/animals-a-to-z/chambered-nautilus'],
+ [0,'Cephalopoda','船蛸','Argonauta argo','卷曲','海洋','雌性分泌薄而卷曲的卵壳，用来容纳卵。'],
+ [0,'Cephalopoda','普通乌贼','Sepia officinalis','内壳','海洋','俗称海螵蛸的结构位于身体内部，内部含有许多隔层。'],
+ [0,'Cephalopoda','菊石','Ammonoidea','卷曲','化石','许多菊石在同一平面盘绕，也有后来长直或长成结状的种类。','',fossil],
+ [0,'Cephalopoda','箭石','Belemnitida','内壳','化石','常见化石是内部硬质结构的一部分，外形像一枚细长的子弹。'],
+ [0,'Polyplacophora','石鳖','Acanthopleura granulata','板片','海洋','从背面数，壳板一块压着一块。','chiton.webp'],
+ [0,'Scaphopoda','象牙贝','Dentalium elephantinum','管状','海洋','细长的壳像一段微弯的空心管，两端有开口。'],
+ [0,'Monoplacophora','深海单板贝','Neopilina galatheae','帽状','海洋','单片壳覆盖背面，轮廓近似帽贝。'],
+ [0,'Caudofoveata','尾腔类','Caudofoveata','骨针','海洋','细小的钙质骨针分布在蠕虫状身体的体表。'],
+ [0,'Solenogastres','沟腹类','Solenogastres','骨针','海洋','观察的是体表骨针与腹侧沟，适合和有整片外壳的软体动物对照。'],
+ [1,'Brachiopoda','海豆芽','Lingula','双瓣','海洋','两片壳位于背侧和腹侧，单片壳常可沿中线观察对称。'],
+ [1,'Cirripedia','藤壶','Balanomorpha','板片','海洋','周围壳板围成壁，顶部的盖板可以打开。'],
+ [1,'Ostracoda','介形虫','Ostracoda','双瓣','水域','一个小型甲壳动物被两瓣外骨骼包住。'],
+ [1,'Decapoda','美洲螯龙虾','Homarus americanus','甲壳','海洋','头胸甲与分节腹部共同组成外骨骼，生长时会换壳。'],
+ [1,'Echinoidea','海胆','Echinoidea','板片','海洋','去掉棘刺后，可以观察由钙质骨板拼合的骨壳。'],
+ [1,'Testudines','草龟','Mauremys reevesii','板片','淡水','背甲与腹甲包围躯体，背甲的骨性部分与脊椎和肋骨相连。','','https://www.gbif.org/species/search?q=Mauremys%20reevesii'],
+ [1,'Trilobita','三叶虫','Trilobita','板片','化石','分节外骨骼留下了许多化石，有些个体化石呈卷曲姿态。','','https://www.nhm.ac.uk/discover/how-trilobites-conquered-prehistoric-oceans.html'],
+ [1,'Serpulidae','螺旋管虫','Spirorbis','卷曲','海洋','有些种类把石灰质居管盘在海藻或岩石表面，乍看像微小的蜗牛壳。'],
+ [2,'Foraminifera','有孔虫','Foraminifera','微孔','海洋','许多种的壳有多个室，新壳室沿特定方向增加。'],
+ [2,'Radiolaria','放射虫','Radiolaria','微孔','海洋','许多种的矿质骨骼在显微镜下可见孔和向外放射的棘。'],
+ [2,'Bacillariophyta','硅藻','Bacillariophyta','微孔','水域','硅质细胞壁在显微镜下可见规则排列的孔纹。','','https://www.algaebase.org/search/?q=Bacillariophyta'],
+ [3,'Bovidae','大角羊（北美盘羊）','Ovis canadensis','卷曲','陆地','雄性的角厚重而卷曲，适合从侧面和卷壳比较。','horn.webp','https://www.nps.gov/bica/planyourvisit/bighorn-sheep.htm'],
+];
