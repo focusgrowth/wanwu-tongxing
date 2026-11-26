@@ -148,7 +148,25 @@ function updateComparison() {
   let note = '观察这两种结构各自的轮廓、边缘与开口。';
   if (left === right) note = '两侧选中了同一件标本。换一侧就可以比较。';
   else if (left[4] === right[4]) note = '两件标本都有' + left[4] + '的外观。沿着边缘看一圈，找找哪里开始出现差别。';
-  get('compare-note').textContent = note;
+  const pair = [left[7], right[7]].sort().join(',');
+  const observations = {
+    'horn.webp,snail.webp': '先找蜗牛的壳顶，再找羊角的尖端。壳圈在顶端一层层围合，羊角能从根部追到自由伸出的角尖。两张侧影的相似，到这里有了边界。',
+    'nautilus.webp,snail.webp': '先只看外缘，两件标本都有逐圈放大的轮廓。再看中心：蜗牛照片拍的是壳表面，鹦鹉螺照片拍的是剖面。剖面里横过螺旋的线，一道就是一面隔壁。',
+    'chiton.webp,scallop.webp': '在扇贝上用手指从窄端向宽边划，能沿着一条放射肋走完全程。换到石鳖背上，从头端向尾端划，指尖会依次越过八块壳板。'
+  };
+  get('compare-note').textContent = observations[pair] || note;
+  for (const button of document.querySelectorAll('[data-pair]')) {
+    const files = button.dataset.pair.split(',').map(key => key + '.webp').sort();
+    button.setAttribute('aria-pressed', files.join(',') === pair);
+  }
+}
+for (const button of document.querySelectorAll('[data-pair]')) {
+  button.addEventListener('click', () => {
+    const [left, right] = button.dataset.pair.split(',');
+    compareLeft.value = specimens.findIndex(entry => entry[7] === left + '.webp');
+    compareRight.value = specimens.findIndex(entry => entry[7] === right + '.webp');
+    updateComparison();
+  });
 }
 updateComparison();
 for (const button of document.querySelectorAll('[data-food]')) {
