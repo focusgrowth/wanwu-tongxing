@@ -18,19 +18,48 @@ get('trace').addEventListener('click', event => {
   document.querySelector('.specimens').classList.toggle('show', active);
   get('trace-note').hidden = !active;
 });
-const grid = get('grid');
-for (const r of [35,70,105,140,175]) {
-  grid.insertAdjacentHTML('beforeend', '<circle cx="225" cy="200" r="' + r + '" fill="none" stroke="#d9d4c5"/>');
+// Project a three-turn curve with a fixed outer radius in the viewport.
+const grid = get('floor-grid');
+function project(x, y, z) {
+  return [220 + 113 * (x - y) / Math.SQRT2,
+    191 + 42 * (x + y) / Math.SQRT2 - 81 * z];
 }
-grid.insertAdjacentHTML('beforeend', '<path d="M35 200H415 M225 16V384" stroke="#d9d4c5"/>');
+function pointText(point) {
+  return point.map(value => value.toFixed(2)).join(' ');
+}
+for (let i = -4; i <= 4; i++) {
+  const v = i / 4;
+  for (const [start,end] of [[[-1,v,0],[1,v,0]],[[v,-1,0],[v,1,0]]]) {
+    grid.insertAdjacentHTML('beforeend', '<path d="M' + pointText(project(...start)) + 'L' + pointText(project(...end)) + '"/>');
+  }
+}
 function updatePlot() {
-  const growth = Number(get('growth').value);
-  get('factor').value = growth.toFixed(1);
-  get('curve').setAttribute('d', spiral(225, 200, 174, growth, 2));
-  get('points').innerHTML = [0,1,2].map(turn => '<circle cx="' + (225 + 174 * growth ** (turn - 2)) + '" cy="200" r="4.3" fill="#943e28"/>').join('');
-  get('sequence').textContent = '相对半径　1 → ' + growth.toFixed(1) + ' → ' + (growth ** 2).toFixed(2);
+  const w = Number(get('growth').value);
+  const h = Number(get('lift').value);
+  const outer = w ** 3;
+  const curve = [];
+  const floor = [];
+  const markers = [];
+  for (let index = 0; index <= 360; index++) {
+    const t = index / 120;
+    const r = w ** t;
+    const x = r * Math.cos(fullTurn * t) / outer;
+    const y = r * Math.sin(fullTurn * t) / outer;
+    const point = project(x, y, h * (r - 1) / outer);
+    const command = index ? 'L' : 'M';
+    curve.push(command + pointText(point));
+    floor.push(command + pointText(project(x,y,0)));
+    if (index % 120 === 0) markers.push('<circle cx="' + point[0] + '" cy="' + point[1] + '" r="3.5"/>');
+  }
+  get('factor').value = w.toFixed(1);
+  get('lift-value').value = h.toFixed(1);
+  get('model-curve').setAttribute('d', curve.join(' '));
+  get('projection').setAttribute('d', floor.join(' '));
+  get('model-marks').innerHTML = markers.join('');
+  get('model-caption').textContent = '初始半径为 1。第 3 圈末，半径为 ' + Number(outer.toFixed(2)) +
+    '，高度为 ' + Number((h * (outer - 1)).toFixed(2)) + '。';
 }
-get('growth').addEventListener('input', updatePlot);
+for (const control of [get('growth'), get('lift')]) control.addEventListener('input', updatePlot);
 updatePlot();
 
 const classNames = Object.fromEntries(classes.map(([name, latin]) => [latin, name]));
@@ -69,7 +98,9 @@ for (const button of document.querySelectorAll('[data-filter]')) {
     else showCatalog('0', filter);
   });
 }
-function updateCards() {
+let visibleCount = 6;
+function updateCards(extend = false) {
+  if (extend !== true) visibleCount = 6;
   const query = searchInput.value.trim().toLowerCase();
   const results = entries.filter(([scope, taxon, name, latin, shape]) =>
     (!scopeSelect.value || String(scope) === scopeSelect.value) &&
@@ -78,7 +109,9 @@ function updateCards() {
     (!query || [name, latin, classNames[taxon] ?? '', shape].some(value => value.toLowerCase().includes(query)))
   );
   get('count').textContent = results.length + ' / ' + entries.length + ' 条';
-  get('cards').innerHTML = results.map(([scope,taxon,name,latin,shape,habitat,detail,image,source]) => {
+  get('more-cards').hidden = visibleCount >= results.length;
+  get('more-cards').textContent = '再看 ' + Math.min(6, results.length - visibleCount) + ' 条';
+  get('cards').innerHTML = results.slice(0, visibleCount).map(([scope,taxon,name,latin,shape,habitat,detail,image,source]) => {
     const url = source ?? (scope === 0 ? mollusca : marine) + encodeURIComponent(latin);
     const label = classNames[taxon] ?? scopes[scope];
     const photo = image ? '<img class="card-photo" loading="lazy" src="' + image + '" alt="' + name + '标本">' : '';
@@ -91,3 +124,10 @@ for (const select of [scopeSelect, shapeSelect, taxonSelect]) select.addEventLis
 searchInput.addEventListener('input', updateCards);
 get('reset-filters').addEventListener('click', () => showCatalog());
 updateCards();
+
+get('more-cards').addEventListener('click', () => {
+  const previousCount = visibleCount;
+  visibleCount += 6;
+  updateCards(true);
+  get('cards').children[previousCount]?.querySelector('a')?.focus();
+});
