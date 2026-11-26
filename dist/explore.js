@@ -150,9 +150,9 @@ function updateComparison() {
   else if (left[4] === right[4]) note = '两件标本都有' + left[4] + '的外观。沿着边缘看一圈，找找哪里开始出现差别。';
   const pair = [left[7], right[7]].sort().join(',');
   const observations = {
-    'horn.webp,snail.webp': '先找蜗牛的壳顶，再找羊角的尖端。壳圈在顶端一层层围合，羊角能从根部追到自由伸出的角尖。两张侧影的相似，到这里有了边界。',
-    'nautilus.webp,snail.webp': '先只看外缘，两件标本都有逐圈放大的轮廓。再看中心：蜗牛照片拍的是壳表面，鹦鹉螺照片拍的是剖面。剖面里横过螺旋的线，一道就是一面隔壁。',
-    'chiton.webp,scallop.webp': '在扇贝上用手指从窄端向宽边划，能沿着一条放射肋走完全程。换到石鳖背上，从头端向尾端划，指尖会依次越过八块壳板。'
+    'horn.webp,snail.webp': '蜗牛壳从壳顶向外可见多圈壳缝。大角羊的角从根部弯向尖端，沿外缘可以追踪一段连续的弧。',
+    'nautilus.webp,snail.webp': '蜗牛照片显示壳表面的壳圈与壳缝。鹦鹉螺照片显示壳内的隔室，每道横跨壳腔的弧线都是隔壁的截面。',
+    'chiton.webp,scallop.webp': '扇贝的放射肋从铰合部向外缘展开，位于同一片壳上。石鳖背上的横向接缝分隔八块前后排列的壳板。'
   };
   get('compare-note').textContent = observations[pair] || note;
   for (const button of document.querySelectorAll('[data-pair]')) {
